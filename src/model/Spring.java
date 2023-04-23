@@ -1,62 +1,65 @@
 package model;
 
-import java.util.Arrays;
-
 public class Spring {
 
-    private double k = 1.0;
+    private double k;
 
-    public Spring() {}
+    public Spring() {
+        this.k = 1;
+    }
 
     public Spring(double k) {
         this.k = k;
     }
 
-    public double getStiffness() {
+    public double getK() {
         return k;
     }
 
-    private void setStiffness(double k) {
+    private void setK(double k) {
         this.k = k;
     }
 
-    public double[] move(double t, double dt, double x0, double v0) {
-        final int n = (int) (t / dt) + 1;
-        final double[] x = new double[n];
-        final double omega = Math.sqrt(k);
-        final double B = v0 / omega;
-        Arrays.setAll(x, i -> x0 * Math.cos(omega * i * dt) + B * Math.sin(omega * i * dt));
-
-        return x;
-    }
-
-    public double[] move(double t, double dt, double x0) {
-        return move(t, dt, x0, 0.0);
-    }
-
-    public double[] move(double t0, double t1, double dt, double x0, double v0) {
-        return move(t0, t1, dt, x0, v0, 1.0);
-    }
-
-    public double[] move(double t0, double t1, double dt, double x0, double v0, double m) {
-        final int n = (int) ((t1 - t0) / dt) + 1;
-        final double[] x = new double[n];
-        final double omega = Math.sqrt(k / m);
-        final double B = v0 / omega - x0 * omega;
-        Arrays.setAll(x, i -> x0 * Math.cos(omega * (i * dt - t0)) + B * Math.sin(omega * (i * dt - t0)));
-
-        return x;
-    }
-
     public Spring inSeries(Spring that) {
-        final double newK = this.k + that.k;
-
+        final double newK = (that.getK() * this.k) / (that.getK() + this.k);
         return new Spring(newK);
     }
 
     public Spring inParallel(Spring that) {
-        final double newK = 1.0 / (1.0 / this.k + 1.0 / that.k);
-
+        final double newK = that.getK() + this.k;
         return new Spring(newK);
+    }
+
+    public double[] move(double t, double dt, double x0, double v0) {
+        final double w = Math.sqrt(k);
+        final double[] xt = new double[(int) Math.ceil((t) / dt)];
+
+        for (int i = 0, j = 0; i <= t; i += dt, j++) {
+            xt[j] = x0 * Math.cos(w * i) + (v0 / w) * Math.sin(w * i);
+        }
+
+        return xt;
+    }
+
+    public double[] move(double t, double dt, double x0) {
+        return getCoordinates(t, dt, x0, Math.sqrt(k), 0, 0);
+    }
+
+    public double[] move(double t0, double t1, double dt, double x0, double v0) {
+        return getCoordinates(t1, dt, x0, Math.sqrt(k), t0, v0);
+    }
+
+    public double[] move(double t0, double t1, double dt, double x0, double v0, double m) {
+        return getCoordinates(t1, dt, x0, Math.sqrt(k / m), t0, v0);
+    }
+
+    private double[] getCoordinates(double t, double dt, double x0, double w, double t0, double v0) {
+        final double[] coordinates = new double[(int) Math.ceil((t - t0) / dt)];
+
+        for (int j = 0; t0 <= t; t0 += dt, j++) {
+            coordinates[j] = x0 * Math.cos(w * t0) + (v0 / w) * Math.sin(w * t0);
+        }
+
+        return coordinates;
     }
 }
