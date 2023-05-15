@@ -1,4 +1,4 @@
-package model;
+package springs.model;
 
 import java.util.Stack;
 

@@ -1,6 +1,6 @@
-package converter;
+package springs.converter;
 
-import transform.FT;
+import springs.transform.FT;
 
 public abstract class Converter {
     protected int numBits;

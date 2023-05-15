@@ -1,4 +1,4 @@
-package model;
+package springs.model;
 
 public class Spring {
 

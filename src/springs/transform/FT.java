@@ -1,4 +1,4 @@
-package transform;
+package springs.transform;
 
 import java.util.stream.IntStream;
 

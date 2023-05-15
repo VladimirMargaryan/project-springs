@@ -1,7 +1,9 @@
-import converter.Converter;
-import converter.Converter8Bit;
-import converter.ConverterFloat;
-import converter.ConverterInt;
+package springs;
+
+import springs.converter.Converter;
+import springs.converter.Converter8Bit;
+import springs.converter.ConverterFloat;
+import springs.converter.ConverterInt;
 
 public class Main {
     public static void main(String[] args) {

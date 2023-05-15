@@ -1,4 +1,4 @@
-package converter;
+package springs.converter;
 
 import java.util.stream.IntStream;
 
